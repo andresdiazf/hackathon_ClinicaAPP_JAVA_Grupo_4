@@ -1,9 +1,5 @@
 package co.generation.clinica.model;
 
-public class Turno {
-}
-package co.generation.clinica.model;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
