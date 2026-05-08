@@ -2,9 +2,8 @@
 package co.generation.clinica.model;
 import co.generation.clinica.interfaces.Consultable;
 import co.generation.clinica.interfaces.Registrable;
-
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public abstract class Turno implements Registrable, Consultable {
     private int id;
@@ -46,6 +45,9 @@ public abstract class Turno implements Registrable, Consultable {
     }
 
     public void setPaciente(Paciente paciente) {
+        if (paciente == null) {
+            throw new IllegalArgumentException("El paciente no puede ser nulo.");
+        }
         this.paciente = paciente;
     }
 
@@ -54,6 +56,9 @@ public abstract class Turno implements Registrable, Consultable {
     }
 
     public void setMedico(Medico medico) {
+        if (medico == null) {
+            throw new IllegalArgumentException("El medico no puede ser nulo.");
+        }
         this.medico = medico;
     }
 
@@ -62,6 +67,8 @@ public abstract class Turno implements Registrable, Consultable {
     }
 
     public void setFechaHora(LocalDateTime fechaHora) {
+        if (fechaHora == null) {
+            throw new IllegalArgumentException("La fecha y hora no puede ser nula.");
         this.fechaHora = fechaHora;
     }
 
@@ -70,6 +77,10 @@ public abstract class Turno implements Registrable, Consultable {
     }
 
     public void setEstado(EstadoTurno estado) {
+            if (estado == null) {
+                throw new IllegalArgumentException("El estado no puede ser nulo.");
+            }
+        }
         this.estado = estado;
     }
 
@@ -83,19 +94,22 @@ public abstract class Turno implements Registrable, Consultable {
         if (obj == null) return false;
         if (!(obj instanceof Turno)) return false;
 
-        Turno otro = (Turno) obj;
-        return this.medico.equals(otro.medico) &&        // usa el equals de Medico
-                this.fechaHora.equals(otro.fechaHora);    // mismo momento
+        Turno turno = (Turno) obj;
+        return this.medico.equals(turno.medico) &&        // usa el equals de Medico
+                this.fechaHora.equals(turno.fechaHora);    // mismo momento
     }
 
-    @Override
+    public int hashCode() {
+        return Objects.hash(medico, fechaHora);
+    }
+// toString(): formato esperado ® "[PENDIENTE] María García — Dr. Carlos Pérez (CARDIOLOGIA) —
+//2026-06-10T09:30".
+        @Override
     public String toString() {
         return "[" + estado + "] " + paciente.getNombre() + " " + paciente.getApellido()
                 + " — Dr. " + medico.getNombre() + " " + medico.getApellido()
                 + " (" + medico.getEspecialidad() + ")"
                 + " — " + fechaHora;
-    // toString(): formato esperado ® "[PENDIENTE] María García — Dr. Carlos Pérez (CARDIOLOGIA) —
-    //2026-06-10T09:30".
 
     }
 

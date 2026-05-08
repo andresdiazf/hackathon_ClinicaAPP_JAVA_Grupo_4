@@ -1,0 +1,110 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface Registrable {
+  +getDatosRegistro() : String
+  +esValido() : boolean
+}
+
+interface Consultable {
+  +listarTurnosDelDia(fecha : LocalDate) : List<Turno>
+  +buscarPorMedico(medico : Medico) : List<Turno>
+  +buscarPorPaciente(paciente : Paciente) : List<Turno>
+}
+
+enum EstadoTurno {
+  PENDIENTE
+  ATENDIDO
+  CANCELADO
+}
+
+enum Especialidad {
+  GENERAL
+  PEDIATRIA
+  CARDIOLOGIA
+  URGENCIAS
+}
+
+class Paciente {
+  -id : int
+  -cedula : String
+  -nombre : String
+  -apellido : String
+  -telefono : String
+  +Paciente(cedula, nombre, apellido, telefono)
+  +Paciente(id, cedula, nombre, apellido, telefono)
+  +getDatosRegistro() : String
+  +esValido() : boolean
+  +toString() : String
+  +equals(o : Object) : boolean
+}
+
+class Medico {
+  -id : int
+  -nombre : String
+  -apellido : String
+  -especialidad : Especialidad
+  +Medico(nombre, apellido, especialidad)
+  +Medico(id, nombre, apellido, especialidad)
+  +getDatosRegistro() : String
+  +esValido() : boolean
+  +toString() : String
+  +equals(o : Object) : boolean
+}
+
+class Turno {
+  -id : int
+  -paciente : Paciente
+  -medico : Medico
+  -fechaHora : LocalDateTime
+  -estado : EstadoTurno
+  +Turno(paciente, medico, fechaHora)
+  +Turno(id, paciente, medico, fechaHora, estado)
+  +toString() : String
+  +equals(o : Object) : boolean
+}
+
+class ClinicaService {
+  -pacientes : List<Paciente>
+  -medicos : List<Medico>
+  -turnos : List<Turno>
+  +registrarPaciente(p : Paciente) : void
+  +buscarPorCedula(cedula : String) : Paciente
+  +listarPacientes() : void
+  +registrarMedico(m : Medico) : void
+  +buscarPorNombreApellido(nombre : String, apellido : String) : Medico
+  +listarMedicos() : void
+  +asignarTurno(t : Turno) : void
+  +cancelarTurno(idTurno : int) : void
+  +cambiarEstadoTurno(idTurno : int, nuevo : EstadoTurno) : void
+  +getPacientes() : List<Paciente>
+  +getMedicos() : List<Medico>
+  +getTurnos() : List<Turno>
+}
+
+class DatosCSV {
+  {static} +cargar(servicio : ClinicaService) : void
+  {static} +guardar(servicio : ClinicaService) : void
+}
+
+class Main {
+  {static} +main(args : String[]) : void
+}
+
+Paciente ..|> Registrable
+Medico ..|> Registrable
+ClinicaService ..|> Consultable
+
+Turno --> Paciente
+Turno --> Medico
+Turno --> EstadoTurno
+Medico --> Especialidad
+
+ClinicaService o-- Paciente
+ClinicaService o-- Medico
+ClinicaService o-- Turno
+
+DatosCSV ..> ClinicaService
+Main ..> ClinicaService
+Main ..> DatosCSV
+@enduml
