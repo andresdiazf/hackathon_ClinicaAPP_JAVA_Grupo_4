@@ -42,6 +42,7 @@ public class Paciente {
     }
 
     public String getNombre() {
+
         return nombre;
     }
 
